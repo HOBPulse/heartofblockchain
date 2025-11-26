@@ -1,78 +1,162 @@
+"use client"
+
+import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import Image from "next/image"
+import Link from "next/link"
+import { Campaign } from "@/data/campaigns"
+import DonationModal from "./hob/donation-modal"
+import WithdrawalFlow from "./hob/withdrawal-flow"
 
-interface CampaignCardProps {
-    id: string
-    name: string
-    age: number
-    location: string
-    description: string
-    image: string
-    raised: number
-    goal: number
-    percentFunded: number
-    tags: string[]
-    urgency?: string
+interface CampaignCardProps extends Campaign {
+  isCreator?: boolean
+  userWalletAddress?: string
 }
 
-export default function CampaignCard({
-                                         id,
-                                         name,
-                                         age,
-                                         location,
-                                         description,
-                                         image,
-                                         raised,
-                                         goal,
-                                         percentFunded,
-                                         tags,
-                                         urgency,
-                                     }: CampaignCardProps) {
-    return (
-        <Card className="overflow-hidden">
-            <div className="relative h-48 w-full">
-                <Image src={image || "/placeholder.svg"} alt={`${name}'s campaign`} fill className="object-cover" />
-            </div>
-            <CardContent className="p-4">
-                <div className="mb-2">
-                    <h3 className="font-semibold">
-                        {name}, {age} - {location}
-                    </h3>
-                    <p className="text-sm text-gray-600 line-clamp-3">{description}</p>
-                </div>
-                <div className="mt-4 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-            <span>
-              ${raised.toLocaleString()} of ${goal.toLocaleString()} raised
+const getTagStyles = (variant: string) => {
+  switch (variant) {
+    case "urgent":
+      return "bg-red-400/20 text-red-600"
+    case "verified":
+      return "bg-green-400/20 text-green-600"
+    case "child":
+      return "bg-purple-400/20 text-purple-600"
+    case "recovery":
+      return "bg-blue-400/20 text-blue-600"
+    case "low-funded":
+      return "bg-gray-400/20 text-gray-600"
+    case "adult":
+      return "bg-orange-400/20 text-orange-600"
+    case "ongoing":
+      return "bg-orange-400/20 text-orange-600"
+    case "mother":
+      return "bg-pink-400/20 text-pink-600"
+    default:
+      return "bg-gray-400/20 text-gray-600"
+  }
+}
+
+export default function CampaignCard(props: CampaignCardProps) {
+  const { id, name, age, location, description, image, raised, goal, tags, isCreator, userWalletAddress } = props
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false)
+  const [isWithdrawalFlowOpen, setIsWithdrawalFlowOpen] = useState(false)
+  const percentFunded = Math.round((raised / goal) * 100)
+  
+  // Show withdraw button if user is creator and campaign is 100% funded and ended
+  // For testing: showing withdraw button by default
+  const canWithdraw = true // isCreator && percentFunded >= 100 && (props.daysRemaining ?? 0) <= 0
+
+  return (
+    <>
+    <Card className="overflow-hidden border-0 shadow-md bg-white">
+      {/* Image */}
+      <div className="relative h-48 w-full">
+        <Image
+          src={image}
+          alt={`${name}'s campaign`}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      </div>
+
+      <CardContent className="p-4 md:p-6">
+        {/* Name and Location */}
+        <h3 className="font-bold text-gray-900 mb-2 text-base md:text-lg">
+          {name.includes("for") || name.includes("Get")
+            ? name
+            : age > 0
+              ? `${name}, ${age} - ${location}`
+              : `${name} - ${location}`
+          }
+        </h3>
+
+        {/* Description */}
+        <p className="text-sm md:text-base text-gray-600 mb-4 line-clamp-3">
+          {description}
+        </p>
+
+        {/* Progress Section */}
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center justify-between text-xs md:text-sm">
+            <span className="text-gray-700 font-medium">
+              {raised} SOL of {goal} SOL raised
             </span>
-                        <span>{percentFunded}% Funded</span>
-                    </div>
-                    <Progress value={percentFunded} className="h-2" />
-                </div>
-                <div className="mt-3 flex flex-wrap gap-1">
-                    {urgency && (
-                        <Badge variant="destructive" className="text-xs">
-                            {urgency}
-                        </Badge>
-                    )}
-                    {tags.map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                            {tag}
-                        </Badge>
-                    ))}
-                </div>
-            </CardContent>
-            <CardFooter className="flex gap-2 p-4 pt-0">
-                <Button className="w-full" size="sm">
-                    Donate
-                </Button>
-                <Button variant="outline" size="sm" className="w-full">
-                    View Story
-                </Button>
-            </CardFooter>
-        </Card>
-    )
+            <span className="text-gray-700 font-medium">
+              {percentFunded}% Funded
+            </span>
+          </div>
+          <div className="w-full bg-gray-300 rounded-full h-2 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-pink-500 to-teal-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${percentFunded}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {tags.map((tag, index) => (
+            <Badge
+              key={index}
+              className={`text-xs px-2 py-1 rounded-full border ${getTagStyles(tag.variant)}`}
+            >
+              {tag.label}
+            </Badge>
+          ))}
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex gap-2 p-4 md:p-6 pt-0">
+        {canWithdraw ? (
+          <Button 
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+            size="sm"
+            onClick={() => setIsWithdrawalFlowOpen(true)}
+          >
+            Withdraw
+          </Button>
+        ) : (
+          <Button 
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+            size="sm"
+            onClick={() => setIsDonationModalOpen(true)}
+          >
+            Donate
+          </Button>
+        )}
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex-1 border-gray-300 hover:bg-gray-100"
+          asChild
+        >
+          <Link href={`/explore/${id}`}>View Story</Link>
+        </Button>
+      </CardFooter>
+    </Card>
+
+    {/* Donation Modal */}
+    <DonationModal
+      open={isDonationModalOpen}
+      onOpenChange={setIsDonationModalOpen}
+      campaign={props}
+    />
+
+    {/* Withdrawal Flow */}
+    {canWithdraw && (
+      <WithdrawalFlow
+        campaign={props}
+        open={isWithdrawalFlowOpen}
+        onOpenChange={setIsWithdrawalFlowOpen}
+        onSuccess={() => {
+          // Refresh or show success message
+          setIsWithdrawalFlowOpen(false)
+        }}
+      />
+    )}
+    </>
+  )
 }
