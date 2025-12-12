@@ -1,119 +1,123 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { X, Heart, ExternalLink } from "lucide-react"
-import { Campaign } from "@/data/campaigns"
-import { Inter } from "next/font/google"
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { X, Heart, ExternalLink } from "lucide-react";
+import { Campaign } from "@/data/campaigns";
+import { Inter } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
-})
+});
 
 interface DonationModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  campaign: Campaign
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  campaign: Campaign;
 }
 
-type ModalState = "not-connected" | "connected" | "success"
+type ModalState = "not-connected" | "connected" | "success";
 
 const getTagStyles = (variant: string) => {
   switch (variant) {
     case "urgent":
-      return "bg-red-400/20 text-red-600"
+      return "bg-red-400/20 text-red-600";
     case "verified":
-      return "bg-green-400/20 text-green-600"
+      return "bg-green-400/20 text-green-600";
     case "child":
-      return "bg-purple-400/20 text-purple-600"
+      return "bg-purple-400/20 text-purple-600";
     case "recovery":
-      return "bg-blue-400/20 text-blue-600"
+      return "bg-blue-400/20 text-blue-600";
     case "low-funded":
-      return "bg-gray-400/20 text-gray-600"
+      return "bg-gray-400/20 text-gray-600";
     case "adult":
-      return "bg-orange-400/20 text-orange-600"
+      return "bg-orange-400/20 text-orange-600";
     case "ongoing":
-      return "bg-orange-400/20 text-orange-600"
+      return "bg-orange-400/20 text-orange-600";
     case "mother":
-      return "bg-pink-400/20 text-pink-600"
+      return "bg-pink-400/20 text-pink-600";
     default:
-      return "bg-gray-400/20 text-gray-600"
+      return "bg-gray-400/20 text-gray-600";
   }
-}
+};
 
-export default function DonationModal({ open, onOpenChange, campaign }: DonationModalProps) {
-  const [modalState, setModalState] = useState<ModalState>("not-connected")
-  const [amount, setAmount] = useState("")
-  const [walletAddress, setWalletAddress] = useState<string | null>(null)
-  const [walletName, setWalletName] = useState<string | null>(null)
+export default function DonationModal({
+  open,
+  onOpenChange,
+  campaign,
+}: DonationModalProps) {
+  const [modalState, setModalState] = useState<ModalState>("not-connected");
+  const [amount, setAmount] = useState("");
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [walletName, setWalletName] = useState<string | null>(null);
   const [donationData, setDonationData] = useState<{
-    amount: number
-    txHash: string
-    date: string
-  } | null>(null)
+    amount: number;
+    txHash: string;
+    date: string;
+  } | null>(null);
 
   const handleConnectWallet = () => {
     // Simulate wallet connection - replace with actual wallet integration
-    setWalletAddress("0xAB12...CD34")
-    setWalletName("Solflare Wallet")
-    setModalState("connected")
-  }
+    setWalletAddress("0xAB12...CD34");
+    setWalletName("Solflare Wallet");
+    setModalState("connected");
+  };
 
   const handleDonate = async () => {
     if (!amount || parseFloat(amount) <= 0) {
-      return
+      return;
     }
 
     // Simulate donation - replace with actual blockchain transaction
-    const donationAmount = parseFloat(amount)
-    const txHash = `0xF4a${Math.random().toString(16).substring(2, 10)}8K91`
+    const donationAmount = parseFloat(amount);
+    const txHash = `0xF4a${Math.random().toString(16).substring(2, 10)}8K91`;
     const date = new Date().toLocaleString("en-US", {
       month: "short",
       day: "numeric",
       hour: "numeric",
       minute: "2-digit",
       timeZone: "UTC",
-      timeZoneName: "short"
-    })
+      timeZoneName: "short",
+    });
 
     setDonationData({
       amount: donationAmount,
       txHash,
-      date
-    })
-    setModalState("success")
-  }
+      date,
+    });
+    setModalState("success");
+  };
 
   const handleClose = () => {
-    onOpenChange(false)
+    onOpenChange(false);
     // Reset state after a delay to allow animation
     setTimeout(() => {
-      setModalState("not-connected")
-      setAmount("")
-      setDonationData(null)
-    }, 300)
-  }
+      setModalState("not-connected");
+      setAmount("");
+      setDonationData(null);
+    }, 300);
+  };
 
-  const percentFunded = Math.round((campaign.raised / campaign.goal) * 100)
-  const solPrice = 140.4 // Approximate SOL price in USD
+  const percentFunded = Math.round((campaign.raised / campaign.goal) * 100);
+  const solPrice = 140.4; // Approximate SOL price in USD
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent 
-        className={`max-w-md p-0 ${inter.variable} font-[var(--font-inter)]`} 
-        style={{ fontFamily: 'var(--font-inter), sans-serif' }}
+      <DialogContent
+        className={`max-w-md p-0 ${inter.variable} font-[var(--font-inter)]`}
+        style={{ fontFamily: "var(--font-inter), sans-serif" }}
         showCloseButton={false}
       >
         {/* Close Button */}
@@ -135,19 +139,24 @@ export default function DonationModal({ open, onOpenChange, campaign }: Donation
                 </div>
               </div>
               <DialogTitle className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                Thank you for donating {donationData.amount} SOL to {(() => {
-                  if (campaign.name.includes("Help") && campaign.name.includes("Get")) {
+                Thank you for donating {donationData.amount} SOL to{" "}
+                {(() => {
+                  if (
+                    campaign.name.includes("Help") &&
+                    campaign.name.includes("Get")
+                  ) {
                     // Extract name from "Help Amal Get Life-Saving Liver Transplant"
-                    const parts = campaign.name.split(" ")
-                    return parts[1] // "Amal"
+                    const parts = campaign.name.split(" ");
+                    return parts[1]; // "Amal"
                   } else if (campaign.name.includes("for")) {
                     // Extract from "Monthly Medications for Idris"
-                    return campaign.name.split(" for ")[1]
+                    return campaign.name.split(" for ")[1];
                   } else {
                     // Use name directly or first part
-                    return campaign.name.split(",")[0]
+                    return campaign.name.split(",")[0];
                   }
-                })()}'s recovery!
+                })()}
+                's recovery!
               </DialogTitle>
               <p className="text-sm md:text-base text-gray-600 mt-2">
                 Your donation is confirmed and recorded on Solana.
@@ -156,19 +165,24 @@ export default function DonationModal({ open, onOpenChange, campaign }: Donation
 
             <div className="space-y-4 mb-6">
               <div>
-                <h3 className="font-bold text-gray-900 mb-3">Donation Summary</h3>
+                <h3 className="font-bold text-gray-900 mb-3">
+                  Donation Summary
+                </h3>
                 <div className="space-y-2 text-sm md:text-base">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Amount donated:</span>
                     <span className="font-semibold text-gray-900">
-                      {donationData.amount} SOL (${(donationData.amount * solPrice).toFixed(2)})
+                      {donationData.amount} SOL ($
+                      {(donationData.amount * solPrice).toFixed(2)})
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Tx Hash:</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs">{donationData.txHash}</span>
-                      <Link 
+                      <span className="font-mono text-xs">
+                        {donationData.txHash}
+                      </span>
+                      <Link
                         href={`https://solscan.io/tx/${donationData.txHash}`}
                         target="_blank"
                         className="text-red-600 hover:text-red-700 text-sm"
@@ -180,17 +194,23 @@ export default function DonationModal({ open, onOpenChange, campaign }: Donation
                   <div className="flex justify-between">
                     <span className="text-gray-600">Campaign:</span>
                     <span className="font-semibold text-gray-900">
-                      {campaign.name.includes("Help") && campaign.name.includes("Get")
+                      {campaign.name.includes("Help") &&
+                      campaign.name.includes("Get")
                         ? campaign.name
                         : campaign.name.includes("for")
-                          ? campaign.name
-                          : `${campaign.name}'s ${campaign.name.includes("Liver") ? "Liver Transplant" : "Treatment"}`
-                      }
+                        ? campaign.name
+                        : `${campaign.name}'s ${
+                            campaign.name.includes("Liver")
+                              ? "Liver Transplant"
+                              : "Treatment"
+                          }`}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Date:</span>
-                    <span className="font-semibold text-gray-900">{donationData.date}</span>
+                    <span className="font-semibold text-gray-900">
+                      {donationData.date}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -206,8 +226,8 @@ export default function DonationModal({ open, onOpenChange, campaign }: Donation
               </Button>
               <Button
                 onClick={() => {
-                  handleClose()
-                  window.location.href = "/explore"
+                  handleClose();
+                  window.location.href = "/explore";
                 }}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white"
               >
@@ -232,35 +252,39 @@ export default function DonationModal({ open, onOpenChange, campaign }: Donation
                 </div>
                 <div className="flex-1 min-w-0">
                   <DialogTitle className="text-lg md:text-xl font-bold text-gray-900 mb-2">
-                    {campaign.name.includes("Get") 
+                    {campaign.name.includes("Get")
                       ? campaign.name
-                      : `Help ${campaign.name} Get Life-Saving Treatment`
-                    }
+                      : `Help ${campaign.name} Get Life-Saving Treatment`}
                   </DialogTitle>
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-3">
                     {campaign.tags.slice(0, 3).map((tag, index) => (
                       <Badge
                         key={index}
-                        className={`text-xs px-2 py-1 rounded-full border ${getTagStyles(tag.variant)}`}
+                        className={`text-xs px-2 py-1 rounded-full border ${getTagStyles(
+                          tag.variant
+                        )}`}
                       >
                         {tag.label}
                       </Badge>
                     ))}
                   </div>
-                  {/* Progress Bar */}
-                  <div className="mb-2">
-                    <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                      <div 
-                        className="bg-gradient-to-r from-pink-500 to-teal-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${percentFunded}%` }}
-                      />
-                    </div>
-                  </div>
-                  <p className="text-xs md:text-sm text-gray-600">{percentFunded}% Funded</p>
                 </div>
               </div>
             </DialogHeader>
+            <div className="pb-4">
+              <div className="mb-2">
+                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-pink-500 to-teal-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${percentFunded}%` }}
+                  />
+                </div>
+              </div>
+              <p className="text-xs md:text-sm text-gray-600 float-right">
+                {percentFunded}% Funded
+              </p>
+            </div>
 
             {modalState === "not-connected" ? (
               /* Wallet Not Connected State */
@@ -322,7 +346,8 @@ export default function DonationModal({ open, onOpenChange, campaign }: Donation
                   />
                 </div>
                 <div className="text-sm md:text-base text-gray-700">
-                  Connected: <span className="font-semibold">{walletName}</span> ({walletAddress})
+                  Connected: <span className="font-semibold">{walletName}</span>{" "}
+                  ({walletAddress})
                 </div>
                 <p className="text-xs md:text-sm text-gray-500">
                   Your donation will be publicly visible on-chain.
@@ -349,6 +374,5 @@ export default function DonationModal({ open, onOpenChange, campaign }: Donation
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

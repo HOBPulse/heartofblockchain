@@ -98,21 +98,34 @@ export default function CampaignDetailsPage({ params }: PageProps) {
 
       <div className="px-4 py-10 md:py-14">
         <div className="mx-auto max-w-6xl rounded-3xl border border-gray-100 bg-white p-6 shadow-xl shadow-gray-200/40 sm:p-8 md:p-10">
-        <div className="space-y-8 py-4">
-          <h1 className="mt-2 text-3xl font-semibold leading-tight text-gray-900 md:text-[34px]">
-            {campaign.name.includes("Get") || campaign.name.includes("Help")
-              ? campaign.name
-              : campaign.name.includes("for")
-              ? `Help ${
-                  campaign.name.split(" for ")[1]
-                } Get Life-Saving Treatment`
-              : `Help ${campaign.name} Get Life-Saving ${
-                  campaign.age > 0 ? "Treatment" : "Support"
-                }`}
-          </h1>
-          <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
-            {campaign.campaignId}
-          </p>
+          <div className="space-y-8 py-4 flex flex-col md:space-y-0 md:flex-row md:items-center md:justify-between md:py-0">
+            <h1 className="mt-2 text-3xl font-semibold leading-tight text-gray-900 md:text-[34px]">
+              {campaign.name.includes("Get") || campaign.name.includes("Help")
+                ? campaign.name
+                : campaign.name.includes("for")
+                ? `Help ${
+                    campaign.name.split(" for ")[1]
+                  } Get Life-Saving Treatment`
+                : `Help ${campaign.name} Get Life-Saving ${
+                    campaign.age > 0 ? "Treatment" : "Support"
+                  }`}
+            </h1>
+            <Link
+              href="/explore"
+              className="rounded-full bg-gray-300/20 p-3 text-gray-600 shadow-sm backdrop-blur transition hover:bg-white"
+            >
+              <X className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+            <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
+              {campaign.campaignId}
+            </p>
+            <button className="p-3 text-gray-600 flex items-center gap-2">
+              <Share2 className="h-4 w-4" />
+              <pre className="underline">Share</pre>
+            </button>
           </div>
           <div className="space-y-8">
             {/* Hero Media */}
@@ -135,19 +148,6 @@ export default function CampaignDetailsPage({ params }: PageProps) {
                     sizes="(max-width: 1024px) 100vw, 66vw"
                   />
                 )}
-              </div>
-
-              {/* Corner Actions */}
-              <div className="absolute right-4 top-4 flex items-center gap-2">
-                <button className="rounded-full border border-white/70 bg-white/80 p-3 text-gray-600 shadow-sm backdrop-blur transition hover:bg-white">
-                  <Share2 className="h-4 w-4" />
-                </button>
-                <Link
-                  href="/explore"
-                  className="rounded-full border border-white/70 bg-white/80 p-3 text-gray-600 shadow-sm backdrop-blur transition hover:bg-white"
-                >
-                  <X className="h-4 w-4" />
-                </Link>
               </div>
 
               {/* Tags Overlay */}
@@ -193,7 +193,6 @@ export default function CampaignDetailsPage({ params }: PageProps) {
               {/* Campaign Story */}
               <div>
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-1 rounded-full bg-red-200" />
                   <h2 className="text-2xl font-semibold text-gray-900">
                     Campaign Story
                   </h2>
@@ -208,7 +207,6 @@ export default function CampaignDetailsPage({ params }: PageProps) {
               {/* Use of Funds */}
               <div>
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-1 rounded-full bg-sky-200" />
                   <h2 className="text-2xl font-semibold text-gray-900">
                     Use of Funds
                   </h2>
@@ -239,7 +237,7 @@ export default function CampaignDetailsPage({ params }: PageProps) {
             {/* Right Column - Sidebar */}
             <div className="space-y-6">
               {/* Donation Progress */}
-              <div className="rounded-2xl border border-gray-100 bg-[#fff6f5] p-6 shadow-sm">
+              <div className="rounded-2xl border border-gray-100 bg-gray-300/30 p-6 shadow-sm">
                 <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
                   Progress
                 </p>
@@ -254,8 +252,12 @@ export default function CampaignDetailsPage({ params }: PageProps) {
                 </p>
                 <div className="mt-5 h-3 w-full rounded-full bg-white/70">
                   <div
-                    className="h-3 rounded-full bg-gradient-to-r from-[#f86b6b] via-[#fb6e9d] to-[#fbb96e] transition-all duration-500"
-                    style={{ width: `${percentFunded}%` }}
+                    className="h-4 rounded-full transition-all duration-300"
+                    style={{
+                      width: `${percentFunded}%`,
+                      background:
+                        "linear-gradient(to right, rgb(239, 68, 68), rgb(147, 51, 234), rgb(236, 72, 153), rgb(59, 130, 246), rgb(34, 197, 94))",
+                    }}
                   />
                 </div>
                 <Button

@@ -21,17 +21,17 @@ export default function ExplorePage() {
                             className="pl-9 md:pl-10 pr-4 py-2 md:py-3 w-100 text-sm md:text-base" 
                         />
                     </div>
-                    <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12">
+                    <Button variant="outline" size="icon" className="h-10 w-10 md:w-auto px-2">
                         <SlidersHorizontal className="h-4 w-4 md:h-5 md:w-5" />
-                        <span className="sr-only">Sort</span>
+                        <span className="">Sort</span>
                     </Button>
-                    <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12">
+                    <Button variant="outline" size="icon" className="h-10 w-10 md:w-auto px-2">
                         <Filter className="h-4 w-4 md:h-5 md:w-5" />
-                        <span className="sr-only">Filter</span>
+                        <span className="">Filter</span>
                     </Button>
                 </div>
 
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6 md:mb-8">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-6 md:mb-8">
                     Urgent Cases You Can Help
                 </h2>
 
